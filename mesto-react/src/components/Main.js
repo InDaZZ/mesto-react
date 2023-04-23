@@ -5,39 +5,32 @@ import { useEffect, useState } from "react";
 import { Api, api } from '../utils/Api.js';
 import Card from './Card.js'
 
+function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace }) {
 
-api.getUserInfo()
-.then((res)=>{
-  console.log(res)
-})
+  const [userName, setUserName] = useState('');
 
-function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace}) {
-  
-  const [userName,setUserName] = useState('');
+  const [userDescription, setUserDescription] = useState('');
 
-  const [userDescription,setUserDescription]= useState('');
+  const [userAvatar, setUserAvatar] = useState('');
 
-  const [userAvatar,setUserAvatar]= useState('');
-
-  const [cards,setCards]= useState([]);
+  const [cards, setCards] = useState([]);
 
   React.useEffect(() => {
     api.getUserInfo()
-    .then((res) => {
-      setUserName(res.name) 
-      setUserDescription(res.about)
-      setUserAvatar(res.avatar)
-    })
-  });
-   
-  React.useEffect(() => {
+      .then((res) => {
+        setUserName(res.name)
+        setUserDescription(res.about)
+        setUserAvatar(res.avatar)
+      })
+      .catch((error) => console.log(`Ошибка :( ${error})`));
+
     api.getTaskCards()
-    .then((res) => {
-      setCards(res)
-    })
-  },[]);
-  
-  
+      .then((res) => {
+        setCards(res)
+      })
+      .catch((error) => console.log(`Ошибка :( ${error})`));
+  }, []);
+
   return (
 
     <main className="main">
@@ -47,7 +40,7 @@ function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace}) {
           <img src={require('../images/edit-profile-avatar.png')} alt="Иконка-редактирования"
             className="profile__edit-avatar" />
         </div>
-        
+
         <div className="profile__info">
           <h1 className="profile__name">{`${userName}`}</h1>
           <button type="button" className="profile__edit-button" onClick={onEditProfile}></button>
@@ -56,23 +49,13 @@ function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace}) {
         <button type="button" className="profile__add-button" onClick={onAddPlace}></button>
       </section>
       <section className="elements">
-        {cards.map( (card,i) => {
-          return(
-          <Card card = {card} key={card._id} onCardClick={onCardClick}/>
-        )} 
+        {cards.map((card, i) => {
+          return (
+            <Card card={card} key={card._id} onCardClick={onCardClick} />
+          )
+        }
         )}
       </section>
-      
-      
-      
-      <PopupWithForm popupId="popupConfirmDeletion" popupContainerId="" title="Вы уверены?" buttonText="">
-        <label htmlFor="editAvatar" className="popup__field">
-          <input type="url" className="popup__item popup__item_type_card-name" placeholder="Ссылка на картинку"
-            name="link" id="editAvatar" defaultValue="" required />
-          <span className="editAvatar-error popup__error"></span>
-        </label>
-      </PopupWithForm>
-
     </main >
   )
 };

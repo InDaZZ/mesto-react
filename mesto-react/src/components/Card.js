@@ -1,13 +1,13 @@
 import React from "react";
-function Card({card,onCardClick}) {
- 
-  
+function Card({ card, onCardClick }) {
+
+
   function handleClick() {
     console.log(onCardClick(card))
   }
-  
+
   return (
-    <div className="element" key={card._id}>
+    <div className="element">
       <img src={`${card.link}`} alt={card.name} className="element__image" style={{ color: "FFFFFF" }} onClick={handleClick} />
       <div className="element__content">
         <h2 className="element__text">{card.name}</h2>

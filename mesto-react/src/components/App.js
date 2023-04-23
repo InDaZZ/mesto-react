@@ -16,7 +16,7 @@ function App(props) {
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
-  
+
 
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
@@ -38,13 +38,13 @@ function App(props) {
     setIsEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
     setEditAvatarPopupOpen(false);
-    setSelectedCard(false)
+    setSelectedCard({})
   };
 
   return (
     <>
       <Header />
-      <Main onAddPlace={handleAddPlaceClick} onEditProfile={handleEditProfileClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick}/>
+      <Main onAddPlace={handleAddPlaceClick} onEditProfile={handleEditProfileClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} />
       <Footer />
       <PopupWithForm popupId="popupProfile" formName="editProfile" id="popupFormProfile" title="Редактировать профиль" buttonText="Сохранить" isOpen={isEditProfilePopupOpen} onClose={closePopups}>
         <label htmlFor="fullName" className="popup__field">
@@ -71,13 +71,20 @@ function App(props) {
         </label>
       </PopupWithForm>
       <PopupWithForm popupId="popupEditAvatar" id="popupFormAvatar" title="Обновить аватар" buttonText="Да" isOpen={isEditAvatarPopupOpen} onClose={closePopups}>
-        <label for="editAvatar" className="popup__field">
+        <label htmlFor="editAvatar" className="popup__field">
           <input type="url" className="popup__item popup__item_type_card-name" placeholder="Ссылка на картинку"
             name="link" id="editAvatar" defaultValue="" required />
           <span className="editAvatar-error popup__error"></span>
         </label>
       </PopupWithForm>
-      < ImagePopup card={selectedCard} onClose={closePopups}/>
+      <PopupWithForm popupId="popupConfirmDeletion" popupContainerId="" title="Вы уверены?" buttonText="">
+        <label htmlFor="editAvatar" className="popup__field">
+          <input type="url" className="popup__item popup__item_type_card-name" placeholder="Ссылка на картинку"
+            name="link" id="editAvatar" defaultValue="" required />
+          <span className="editAvatar-error popup__error"></span>
+        </label>
+      </PopupWithForm>
+      < ImagePopup card={selectedCard} onClose={closePopups} />
     </>
   );
 }
