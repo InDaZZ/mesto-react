@@ -38,7 +38,7 @@ export default class Api {
       .then(this._handleResponse)
   }
 
-  patchTaskProfileEditing({ data }) {
+  setUserInfo({ data }) {
     return fetch(this.url + '/users/me',
       {
         method: 'PATCH',
@@ -49,8 +49,8 @@ export default class Api {
       .then(this._handleResponse)
   }
 
-  deleteTask(_id) {
-    return fetch(this.url + '/cards/' + _id,
+  deleteTask(id) {
+    return fetch(this.url + '/cards/' + id,
       {
         method: 'DELETE',
         headers: this.headers,
@@ -86,7 +86,32 @@ export default class Api {
     )
       .then(this._handleResponse)
   }
-};
+
+  changeLikeCardStatus(id, isLiked) {
+    if (isLiked) {
+      return fetch(this.url + '/cards/' + id + '/likes', {
+  
+        method: 'PUT',
+        headers: this.headers,
+  
+      })
+        .then((res) => this._handleResponse(res))
+    }
+    else {
+      return fetch(this.url + '/cards/' + id + '/likes', {
+  
+        method: 'DELETE',
+        headers: this.headers,
+  
+      })
+        .then((res) => this._handleResponse(res))
+  }
+  }
+
+}
+
+
+
 
 export const api = new Api({
   url: 'https://mesto.nomoreparties.co/v1/cohort-62',
