@@ -1,7 +1,8 @@
+import headerLogo from '../images/Logo.png'
 function Header() {
   return (
     <header className="header">
-      <img src={require('../images/Logo.png')} className="header__logo" />
+      <img src={headerLogo} className="header__logo" alt="Логотип-'Mesto'"/>
     </header>
   )
 };

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useEffect, useState } from "react";
 import PopupWithForm from './PopupWithForm.js';
-import { CurrentUserContext } from './contexts/CurrentUserContext.js'
+import { CurrentUserContext } from '../contexts/CurrentUserContext.js'
 
-function EditProfilePopup ( {isOpen, onClose, onUpdateUser} ) {
+function EditProfilePopup ( {isOpen, onClose, onUpdateUser,isLoading} ) {
 
   const currentUser = React.useContext(CurrentUserContext);
 
@@ -14,7 +14,7 @@ function EditProfilePopup ( {isOpen, onClose, onUpdateUser} ) {
   React.useEffect(() => {
     setName(currentUser.name);
     setDescription(currentUser.about);
-  }, [currentUser]); 
+  }, [currentUser,isOpen]); 
 
   function handleChangeName (e) {
     setName(e.target.value);
@@ -36,15 +36,15 @@ function EditProfilePopup ( {isOpen, onClose, onUpdateUser} ) {
   
 
   return(
-    <PopupWithForm popupId="popupProfile" formName="editProfile" id="popupFormProfile" title="Редактировать профиль" buttonText="Сохранить" isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit}>
+    <PopupWithForm popupId="popupProfile" formName="editProfile" id="popupFormProfile" title="Редактировать профиль" buttonText={isLoading? 'Сохранение...' : 'Сохранить'} isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit}>
     <label htmlFor="fullName" className="popup__field">
       <input type="text" className="popup__item popup__item_type_name" placeholder="Имя" name="name" id="fullName"
-        defaultValue="" minLength="2" maxLength="40" required onChange={handleChangeName} />
+        value={name || ''} minLength="2" maxLength="40" required onChange={handleChangeName} />
       <span className="fullName-error popup__error"></span>
     </label>
     <label htmlFor="activity" className="popup__field">
       <input type="text" className="popup__item popup__item_type_activity" placeholder="О себе" name="about"
-        id="activity" defaultValue="" minLength="2" maxLength="200" required onChange={handleChangeActivity}/>
+        id="activity" value={description || ''} minLength="2" maxLength="200" required onChange={handleChangeActivity}/>
       <span className="activity-error popup__error"></span>
     </label>
   </PopupWithForm >

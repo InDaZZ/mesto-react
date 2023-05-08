@@ -4,7 +4,7 @@ import ImagePopup from './ImagePopup.js'
 import { useEffect, useState } from "react";
 import { Api, api } from '../utils/Api.js';
 import Card from './Card.js';
-import { CurrentUserContext } from './contexts/CurrentUserContext.js';
+import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
 function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace, onCardLike, cards, onCardDelete }) {
 
