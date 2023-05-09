@@ -109,12 +109,14 @@ function App(props) {
   };
 
   function handleUpdateAvatar(newAvatar) {
+    setIsLoading(true)
     api.pathTaskFromAvatar(newAvatar)
       .then((newData) => {
         setCurrentUser(newData);
         closePopups();
       })
-      .catch((error) => console.log(`Ошибка :( ${error})`));
+      .catch((error) => console.log(`Ошибка :( ${error})`))
+      .finally(()=>{setIsLoading(false)})
 
   }
 
@@ -140,13 +142,7 @@ function App(props) {
 
 
         <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closePopups} onUpdateAvatar={handleUpdateAvatar} />
-        <PopupWithForm popupId="popupConfirmDeletion" popupContainerId="" title="Вы уверены?" buttonText="">
-          <label htmlFor="editAvatar" className="popup__field">
-            <input type="url" className="popup__item popup__item_type_card-name" placeholder="Ссылка на картинку"
-              name="link" id="editAvatar" defaultValue="" required />
-            <span className="editAvatar-error popup__error"></span>
-          </label>
-        </PopupWithForm>
+        
         < ImagePopup card={selectedCard} onClose={closePopups} />
       </CurrentUserContext.Provider>
     

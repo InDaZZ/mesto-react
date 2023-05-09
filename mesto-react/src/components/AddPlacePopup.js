@@ -3,6 +3,10 @@ import { useEffect, useState, useRef } from "react";
 import PopupWithForm from './PopupWithForm.js';
 
 function AddPlacePopup ({isOpen, onClose, onAddCard, isLoading}) {
+  React.useEffect(() => {
+    setCardName('');
+    setCardLink('');
+}, [isOpen]);
 
   const [cardName,setCardName] = useState('');
 
@@ -23,8 +27,6 @@ function AddPlacePopup ({isOpen, onClose, onAddCard, isLoading}) {
       name: cardName,
       link: cardLink,
     })
-    setCardName('')
-    setCardLink('')
   };
 
   return (

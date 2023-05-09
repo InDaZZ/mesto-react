@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Api, api } from '../utils/Api.js';
 import Card from './Card.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
+import EditAvatarImage from '../images/edit-profile-avatar.png';
 
 function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace, onCardLike, cards, onCardDelete }) {
 
@@ -14,19 +15,15 @@ function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace, onCardLike
 
   const [userAvatar, setUserAvatar] = useState('');
 
-  
-
   const userContext = React.useContext(CurrentUserContext);
-  
 
-  
   return (
 
     <main className="main">
       <section className="profile">
         <div className="profile__avatar-container">
           <img src={userContext.avatar} alt="Фото-профиля" className="profile__avatar" onClick={onEditAvatar} />
-          <img src={require('../images/edit-profile-avatar.png')} alt="Иконка-редактирования"
+          <img src={EditAvatarImage} alt="Иконка-редактирования"
             className="profile__edit-avatar" />
         </div>
 
@@ -39,10 +36,10 @@ function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace, onCardLike
       </section>
       <section className="elements">
         {cards.map((card) => {
-          
+
           return (
-            
-            <Card card={card} key={card._id} onCardClick={onCardClick} onCardLike={onCardLike} onCardDelete={onCardDelete}/>
+
+            <Card card={card} key={card._id} onCardClick={onCardClick} onCardLike={onCardLike} onCardDelete={onCardDelete} />
           )
         }
         )}
