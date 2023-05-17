@@ -11,6 +11,10 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import EditProfilePopup from './EditProfilePopup.js';
 import EditAvatarPopup from './EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import Registr from './Registr.js';
+import Login from './Login.js';
+import InfoTooltip from './InfoTooltip.js';
 
 function App(props) {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -66,17 +70,17 @@ function App(props) {
 
   useEffect(() => {
     function closeByEscape(evt) {
-      if(evt.key === 'Escape') {
+      if (evt.key === 'Escape') {
         closePopups();
       }
     }
-    if(isOpen) {
+    if (isOpen) {
       document.addEventListener('keydown', closeByEscape);
       return () => {
         document.removeEventListener('keydown', closeByEscape);
       }
     }
-  }, [isOpen]) 
+  }, [isOpen])
 
 
   function handleCardLike(card) {
@@ -85,9 +89,9 @@ function App(props) {
 
     // Отправляем запрос в API и получаем обновлённые данные карточки
     api.changeLikeCardStatus(card._id, !isLiked)
-    .then((newCard) => {
-      setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
-    })
+      .then((newCard) => {
+        setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+      })
       .catch((error) => console.log(`Ошибка :( ${error})`));
   };
 
@@ -105,7 +109,7 @@ function App(props) {
       closePopups()
     })
       .catch((error) => console.log(`Ошибка :( ${error})`))
-      .finally(()=>{setIsLoading(false)})
+      .finally(() => { setIsLoading(false) })
   };
 
   function handleUpdateAvatar(newAvatar) {
@@ -116,7 +120,7 @@ function App(props) {
         closePopups();
       })
       .catch((error) => console.log(`Ошибка :( ${error})`))
-      .finally(()=>{setIsLoading(false)})
+      .finally(() => { setIsLoading(false) })
 
   }
 
@@ -127,25 +131,31 @@ function App(props) {
       closePopups();
     })
       .catch((error) => console.log(`Ошибка :( ${error})`))
-      .finally(()=>{setIsLoading(false)})
+      .finally(() => { setIsLoading(false) })
   }
 
 
   return (
-   
+
+    <BrowserRouter>
       <CurrentUserContext.Provider value={currentUser}>
-        <Header />
+        <Routes>
+          <Route path="/sign-up" element={Registr} />
+          <Route path="/sign-in" element={Login} />
+          <Route path="/" element={1} />
+          <Route path="/" element={1} />
+        </Routes>
+        <InfoTooltip />
         <Main onAddPlace={handleAddPlaceClick} onEditProfile={handleEditProfileClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} onCardLike={handleCardLike} cards={cards} onCardDelete={handleCardDelete} />
         <Footer />
-        <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closePopups} onUpdateUser={handleUpdateUser} isLoading ={isLoading} />
-        <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closePopups} onAddCard={handleAddPlaceSubmit} isLoading ={isLoading} />
-
-
+        <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closePopups} onUpdateUser={handleUpdateUser} isLoading={isLoading} />
+        <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closePopups} onAddCard={handleAddPlaceSubmit} isLoading={isLoading} />
         <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closePopups} onUpdateAvatar={handleUpdateAvatar} />
-        
         < ImagePopup card={selectedCard} onClose={closePopups} />
       </CurrentUserContext.Provider>
-    
+    </BrowserRouter>
+
+
   );
 }
 
