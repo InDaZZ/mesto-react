@@ -9,7 +9,7 @@ import EditAvatarImage from '../images/edit-profile-avatar.png';
 import Header from "./Header";
 import { Link } from "react-router-dom";
 
-function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace, onCardLike, cards, onCardDelete,exit }) {
+function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace, onCardLike, cards, onCardDelete, exit, userEmail}) {
 
   const [userName, setUserName] = useState('');
 
@@ -21,10 +21,11 @@ function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace, onCardLike
 
   return (
     <>
-      <Header exit={exit}>
-        
-        <button onClick={exit} className="header__link">Выйти</button>
-
+      <Header exit={exit} userEmail={userEmail}>
+        <div className='header__container'>
+          <p className="header__email-user">{userEmail}</p>
+          <button onClick={exit} className="header__link">Выйти</button>
+        </div>
       </Header>
       <main className="main">
         <section className="profile">

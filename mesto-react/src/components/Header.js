@@ -1,12 +1,14 @@
 import { Children } from 'react';
 import headerLogo from '../images/Logo.png'
-function Header({children,exit}) {
+function Header({ children }) {
   return (
     <header className="header">
-      <img src={headerLogo} className="header__logo" alt="Логотип-'Mesto'"/>
+      <img src={headerLogo} className="header__logo" alt="Логотип-'Mesto'" />
+      
       {children}
+      
     </header>
-    
+
   )
 };
 

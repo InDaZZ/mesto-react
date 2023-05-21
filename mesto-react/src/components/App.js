@@ -30,7 +30,9 @@ function App(props) {
   const [cards, setCards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
   const navigate = useNavigate();
+  
 
   React.useEffect(() => {
 
@@ -181,7 +183,7 @@ function App(props) {
           navigate("/", { replace: true });
           setauthResult(true);
         }
-        else  {
+        else {
           setauthResult(false);
         }
       })
@@ -204,9 +206,11 @@ function App(props) {
       authentication
         .checkToken(jwt)
         .then((res) => {
+          console.log(res)
           if (res) {
             setLoggedIn(true);
             navigate("/", { replace: true });
+            setUserEmail(res.data.email)
           }
         })
         .catch((error) => console.log(`Ошибка :( ${error})`))
@@ -215,7 +219,6 @@ function App(props) {
   }
 
   return (
-
 
     <CurrentUserContext.Provider value={currentUser}>
       <Routes>
@@ -231,6 +234,7 @@ function App(props) {
             onCardDelete={handleCardDelete}
             loggedIn={loggedIn}
             exit={exit}
+            userEmail={userEmail}
           />} />
         <Route path="/sign-up" element={<Registr onSubmit={handleRegisterSubmit} />} />
         <Route path="/sign-in" element={<Login onSubmit={handleLoginSubmit} />} />
@@ -243,8 +247,6 @@ function App(props) {
       <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closePopups} onUpdateAvatar={handleUpdateAvatar} />
       < ImagePopup card={selectedCard} onClose={closePopups} />
     </CurrentUserContext.Provider>
-
-
 
   );
 }
