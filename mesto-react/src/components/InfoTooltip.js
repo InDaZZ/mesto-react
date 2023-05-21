@@ -1,15 +1,16 @@
 import { useState } from "react";
 
 import { Link } from "react-router-dom";
-import sucsess from "../images/Unionsuccess.png"
+import sucsess from "../images/Unionsuccess.png";
+import fail from "../images/Unionfail.png"
 
-function InfoTooltip ( {isOpen, popupId, onClose, title, image}) {
+function InfoTooltip ( {isOpen, popupId, onClose, result}) {
   return ( 
     <div className={`popup ${isOpen ? "popup_active" : ""}`} id={popupId} >
     <div className="popup__container">
         <button type="button" className="popup__button-close" onClick={onClose}></button>
-        <img src={sucsess} alt="#" className="popup__image-info"></img>
-        <h2 className="popup__heading-info">Вы успешно зарегистрировались!</h2>
+        <img src={result ? sucsess : fail } alt="#" className="popup__image-info"></img>
+        <h2 className="popup__heading-info">{result ? 'Вы успешно зарегистрировались!' : 'Что-то пошло не так! Попробуйте ещё раз.'}</h2>
         
     </div>
   </div>

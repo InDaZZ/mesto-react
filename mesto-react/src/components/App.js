@@ -11,26 +11,41 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import EditProfilePopup from './EditProfilePopup.js';
 import EditAvatarPopup from './EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import Registr from './Registr.js';
 import Login from './Login.js';
 import InfoTooltip from './InfoTooltip.js';
+import ProtectedRouteElement from './ProtectedRoute.js';
+//import { register, authorize, getToken } from '../utils/authentication.js'
+import * as authentication from "../utils/authentication.js";
 
 function App(props) {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
+  const [isInfoTooltipPopupOpen, setInfoTooltopPopupOpen] = useState(false);
+  const [authResult, setauthResult] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
+
     api.getUserInfo()
       .then((res) => {
         setCurrentUser(res)
       })
       .catch((error) => console.log(`Ошибка :( ${error})`));
+
+  }, []);
+
+  React.useEffect(() => {
+
+    handleTokenCheck();
+
   }, []);
 
   React.useEffect(() => {
@@ -63,10 +78,11 @@ function App(props) {
     setIsEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
     setEditAvatarPopupOpen(false);
-    setSelectedCard({})
+    setSelectedCard({});
+    setInfoTooltopPopupOpen(false);
   };
 
-  const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard.link
+  const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard.link || isInfoTooltipPopupOpen;
 
   useEffect(() => {
     function closeByEscape(evt) {
@@ -134,26 +150,100 @@ function App(props) {
       .finally(() => { setIsLoading(false) })
   }
 
+  function handleRegisterSubmit(password, email) {
+    authentication
+
+      .register(password, email)
+      .then((res) => {
+        if (res) {
+          setauthResult(true);
+        }
+        else {
+          setauthResult(false);
+        }
+      })
+      .catch((error) => console.log(`Ошибка :( ${error})`))
+
+      .finally(() => {
+        setInfoTooltopPopupOpen(true)
+      })
+
+  }
+
+  function handleLoginSubmit(password, email) {
+    authentication
+
+      .authorize(password, email)
+      .then((res) => {
+        if (res.token) {
+          localStorage.setItem("token", res.token);
+          setLoggedIn(true);
+          navigate("/", { replace: true });
+          setauthResult(true);
+        }
+        else  {
+          setauthResult(false);
+        }
+      })
+      .catch((error) => {
+        console.log(`Ошибка :( ${error})`)
+        setInfoTooltopPopupOpen(true)
+      })
+  }
+
+  function exit() {
+    setLoggedIn(false);
+    localStorage.removeItem("token");
+    navigate("/", { replace: true });
+  }
+
+
+  function handleTokenCheck() {
+    if (localStorage.getItem('token')) {
+      const jwt = localStorage.getItem('token');
+      authentication
+        .checkToken(jwt)
+        .then((res) => {
+          if (res) {
+            setLoggedIn(true);
+            navigate("/", { replace: true });
+          }
+        })
+        .catch((error) => console.log(`Ошибка :( ${error})`))
+    }
+
+  }
 
   return (
 
-    <BrowserRouter>
-      <CurrentUserContext.Provider value={currentUser}>
-        <Routes>
-          <Route path="/sign-up" element={Registr} />
-          <Route path="/sign-in" element={Login} />
-          <Route path="/" element={1} />
-          <Route path="/" element={1} />
-        </Routes>
-        <InfoTooltip />
-        <Main onAddPlace={handleAddPlaceClick} onEditProfile={handleEditProfileClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} onCardLike={handleCardLike} cards={cards} onCardDelete={handleCardDelete} />
-        <Footer />
-        <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closePopups} onUpdateUser={handleUpdateUser} isLoading={isLoading} />
-        <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closePopups} onAddCard={handleAddPlaceSubmit} isLoading={isLoading} />
-        <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closePopups} onUpdateAvatar={handleUpdateAvatar} />
-        < ImagePopup card={selectedCard} onClose={closePopups} />
-      </CurrentUserContext.Provider>
-    </BrowserRouter>
+
+    <CurrentUserContext.Provider value={currentUser}>
+      <Routes>
+        <Route path="/" element={
+          <ProtectedRouteElement
+            element={Main}
+            onAddPlace={handleAddPlaceClick}
+            onEditProfile={handleEditProfileClick}
+            onEditAvatar={handleEditAvatarClick}
+            onCardClick={handleCardClick}
+            onCardLike={handleCardLike}
+            cards={cards}
+            onCardDelete={handleCardDelete}
+            loggedIn={loggedIn}
+            exit={exit}
+          />} />
+        <Route path="/sign-up" element={<Registr onSubmit={handleRegisterSubmit} />} />
+        <Route path="/sign-in" element={<Login onSubmit={handleLoginSubmit} />} />
+
+      </Routes>
+      <InfoTooltip isOpen={isInfoTooltipPopupOpen} result={authResult} onClose={closePopups} />
+      <Footer />
+      <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closePopups} onUpdateUser={handleUpdateUser} isLoading={isLoading} />
+      <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closePopups} onAddCard={handleAddPlaceSubmit} isLoading={isLoading} />
+      <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closePopups} onUpdateAvatar={handleUpdateAvatar} />
+      < ImagePopup card={selectedCard} onClose={closePopups} />
+    </CurrentUserContext.Provider>
+
 
 
   );
