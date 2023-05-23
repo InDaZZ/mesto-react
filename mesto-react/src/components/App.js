@@ -32,33 +32,37 @@ function App(props) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState('');
   const navigate = useNavigate();
-  
+
+
+  React.useEffect(() => {
+    if (loggedIn) {
+      api.getUserInfo()
+        .then((res) => {
+          setCurrentUser(res)
+            .catch((error) => console.log(`Ошибка :( ${error})`));
+        })
+    }
+  }, [navigate]);
+
+
 
   React.useEffect(() => {
 
-    api.getUserInfo()
-      .then((res) => {
-        setCurrentUser(res)
-      })
-      .catch((error) => console.log(`Ошибка :( ${error})`));
+    handleTokenCheck()
 
-  }, []);
+
+  }, [navigate]);
 
   React.useEffect(() => {
+    if (loggedIn) {
+      api.getTaskCards()
+        .then((res) => {
+          setCards(res)
+        })
+        .catch((error) => console.log(`Ошибка :( ${error})`));
+    }
 
-    handleTokenCheck();
-
-  }, []);
-
-  React.useEffect(() => {
-
-    api.getTaskCards()
-      .then((res) => {
-        setCards(res)
-      })
-
-      .catch((error) => console.log(`Ошибка :( ${error})`));
-  }, []);
+  }, [navigate]);
 
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
@@ -159,11 +163,13 @@ function App(props) {
       .then((res) => {
         if (res) {
           setauthResult(true);
+          navigate("/sign-in", { replace: true });
         }
       })
       .catch((error) => {
         setauthResult(false);
-        console.log(`Ошибка :( ${error})`)})
+        console.log(`Ошибка :( ${error})`)
+      })
 
       .finally(() => {
         setInfoTooltopPopupOpen(true)
@@ -182,12 +188,10 @@ function App(props) {
           navigate("/", { replace: true });
           setauthResult(true);
         }
-        else {
-          setauthResult(false);
-        }
       })
       .catch((error) => {
         console.log(`Ошибка :( ${error})`)
+        setauthResult(false)
         setInfoTooltopPopupOpen(true)
       })
   }

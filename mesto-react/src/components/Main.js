@@ -18,6 +18,7 @@ function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace, onCardLike
   const [userAvatar, setUserAvatar] = useState('');
 
   const userContext = React.useContext(CurrentUserContext);
+  
 
   return (
     <>
