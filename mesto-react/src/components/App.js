@@ -94,9 +94,9 @@ function App(props) {
     }
     if (isOpen) {
       document.addEventListener('keydown', closeByEscape);
-      return () => {
-        document.removeEventListener('keydown', closeByEscape);
-      }
+    }
+    return () => {
+      document.removeEventListener('keydown', closeByEscape);
     }
   }, [isOpen])
 
@@ -160,11 +160,10 @@ function App(props) {
         if (res) {
           setauthResult(true);
         }
-        else {
-          setauthResult(false);
-        }
       })
-      .catch((error) => console.log(`Ошибка :( ${error})`))
+      .catch((error) => {
+        setauthResult(false);
+        console.log(`Ошибка :( ${error})`)})
 
       .finally(() => {
         setInfoTooltopPopupOpen(true)
