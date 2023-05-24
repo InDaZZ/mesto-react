@@ -4,7 +4,6 @@ import '../index.css';
 import Main from './Main.js';
 import Footer from './Footer.js';
 import { api } from '../utils/Api.js';
-import PopupWithForm from './PopupWithForm.js'
 import ImagePopup from "./ImagePopup.js";
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import EditProfilePopup from './EditProfilePopup.js';
@@ -32,6 +31,11 @@ function App(props) {
   const [userEmail, setUserEmail] = useState('');
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+
+    handleTokenCheck()
+ 
+  }, []);
 
   React.useEffect(() => {
     if (loggedIn) {
@@ -175,8 +179,9 @@ function App(props) {
       .authorize(password, email)
       .then((res) => {
         if (res.token) {
-          localStorage.setItem("token", res.token);
-          setLoggedIn(true);
+          localStorage.setItem("token", res.token)
+          setLoggedIn(true)
+          setUserEmail(email)
           navigate("/", { replace: true });
           setauthResult(true);
         }
@@ -204,8 +209,8 @@ function App(props) {
         .then((res) => {
           if (res) {
             setLoggedIn(true);
-            navigate("/", { replace: true });
             setUserEmail(res.data.email)
+            navigate("/", { replace: true });
           }
         })
         .catch((error) => console.log(`Ошибка :( ${error})`))

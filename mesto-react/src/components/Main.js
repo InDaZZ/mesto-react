@@ -15,11 +15,7 @@ function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace, onCardLike
 
   const userContext = React.useContext(CurrentUserContext);
   
-  React.useEffect(() => {
-
-    tokenCheck()
  
-  }, []);
 
   return (
     <>
