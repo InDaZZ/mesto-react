@@ -1,10 +1,9 @@
 import React from 'react';
 import { useEffect, useState } from "react";
 import '../index.css';
-import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
-import { Api, api } from '../utils/Api.js';
+import { api } from '../utils/Api.js';
 import PopupWithForm from './PopupWithForm.js'
 import ImagePopup from "./ImagePopup.js";
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
@@ -38,20 +37,13 @@ function App(props) {
     if (loggedIn) {
       api.getUserInfo()
         .then((res) => {
-          setCurrentUser(res)
-            .catch((error) => console.log(`Ошибка :( ${error})`));
+          
+          setCurrentUser(res) 
+          
         })
+        .catch((error) => console.log(`Ошибка :( ${error})`));
     }
-  }, [navigate]);
-
-
-
-  React.useEffect(() => {
-
-    handleTokenCheck()
-
-
-  }, [navigate]);
+  }, [loggedIn]);
 
   React.useEffect(() => {
     if (loggedIn) {
@@ -62,7 +54,7 @@ function App(props) {
         .catch((error) => console.log(`Ошибка :( ${error})`));
     }
 
-  }, [navigate]);
+  }, [loggedIn]);
 
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
@@ -204,12 +196,12 @@ function App(props) {
 
 
   function handleTokenCheck() {
+    
     if (localStorage.getItem('token')) {
       const jwt = localStorage.getItem('token');
       authentication
         .checkToken(jwt)
         .then((res) => {
-          console.log(res)
           if (res) {
             setLoggedIn(true);
             navigate("/", { replace: true });
@@ -238,6 +230,7 @@ function App(props) {
             loggedIn={loggedIn}
             exit={exit}
             userEmail={userEmail}
+            tokenCheck={handleTokenCheck}
           />} />
         <Route path="/sign-up" element={<Registr onSubmit={handleRegisterSubmit} />} />
         <Route path="/sign-in" element={<Login onSubmit={handleLoginSubmit} />} />

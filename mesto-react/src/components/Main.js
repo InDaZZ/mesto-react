@@ -1,15 +1,11 @@
 import React from 'react';
-import PopupWithForm from './PopupWithForm.js'
-import ImagePopup from './ImagePopup.js'
 import { useEffect, useState } from "react";
-import { Api, api } from '../utils/Api.js';
 import Card from './Card.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import EditAvatarImage from '../images/edit-profile-avatar.png';
 import Header from "./Header";
-import { Link } from "react-router-dom";
 
-function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace, onCardLike, cards, onCardDelete, exit, userEmail}) {
+function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace, onCardLike, cards, onCardDelete, exit, userEmail, tokenCheck}) {
 
   const [userName, setUserName] = useState('');
 
@@ -19,6 +15,11 @@ function Main({ onCardClick, onEditAvatar, onEditProfile, onAddPlace, onCardLike
 
   const userContext = React.useContext(CurrentUserContext);
   
+  React.useEffect(() => {
+
+    tokenCheck()
+ 
+  }, []);
 
   return (
     <>

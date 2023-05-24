@@ -1,6 +1,3 @@
-import { useState } from "react";
-
-import { Link } from "react-router-dom";
 import sucsess from "../images/Unionsuccess.png";
 import fail from "../images/Unionfail.png"
 
